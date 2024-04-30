@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_bloc_sign_in/blocs/signInBloc%20/sign_in_bloc.dart';
 import 'package:flutter_bloc_sign_in/blocs/signUpBloc/sign_up_bloc.dart';
 import 'package:flutter_bloc_sign_in/ui/sign_in_screen.dart';
-import 'package:flutter_bloc_sign_in/ui/sign_up_screen.dart';
 
 void main() {
   runApp(const MyApp());

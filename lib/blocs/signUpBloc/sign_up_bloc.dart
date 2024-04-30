@@ -38,7 +38,6 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
                 "The userId is Exist. Please sign in through valid user credentials"));
       }
     } catch (e) {
-      print("error ---------------- $e");
       emit(SignUpFailure(errorMessage: e.toString()));
     }
   }

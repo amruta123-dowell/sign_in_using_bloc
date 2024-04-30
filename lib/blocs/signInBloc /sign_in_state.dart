@@ -7,16 +7,14 @@ class SignInState extends Equatable {
 
 class SignInAddState extends Equatable {
   final SignInStatus signInStatus;
-  final String? errorMessage;
+  String? errorMessage;
 
-  const SignInAddState({required this.signInStatus, this.errorMessage});
+  SignInAddState({required this.signInStatus, this.errorMessage});
   @override
-  List<Object> get props => [signInStatus];
+  List<Object?> get props => [signInStatus, errorMessage];
 
   SignInAddState copyWith(
       {required SignInStatus status, String? errorMessage}) {
     return SignInAddState(signInStatus: status, errorMessage: errorMessage);
   }
 }
-
-class OnClickSignInButtonState extends SignInState {}

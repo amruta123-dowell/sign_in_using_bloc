@@ -14,7 +14,7 @@ class SignInScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     TextEditingController passwordController = TextEditingController();
     TextEditingController userIdController = TextEditingController();
-    String? error;
+
     return BlocConsumer<SignInBloc, SignInAddState>(
       listener: (context, state) {
         if (state.signInStatus == SignInStatus.success) {
@@ -22,7 +22,7 @@ class SignInScreen extends StatelessWidget {
               MaterialPageRoute(builder: (context) => const HomeScreen()));
           passwordController.clear();
           userIdController.clear();
-        } else if (state.signInStatus == SignInStatus.failure) {}
+        }
       },
       builder: (context, state) {
         return Scaffold(
@@ -41,7 +41,7 @@ class SignInScreen extends StatelessWidget {
                 textController: passwordController,
               ),
               const SizedBox(height: 30),
-              if (context.watch<SignInBloc>().state.errorMessage != null)
+              if (context.read<SignInBloc>().state.errorMessage != null)
                 Text(context.watch<SignInBloc>().state.errorMessage!,
                     style: const TextStyle(color: Colors.red, fontSize: 15)),
               ElevatedButton(

@@ -1,6 +1,6 @@
 import 'package:flutter_bloc_sign_in/models/user_details_model.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:sqflite/sqlite_api.dart';
+
 import 'package:path/path.dart' as path;
 
 class DatabaseHelper {
@@ -50,7 +50,6 @@ class DatabaseHelper {
 
     //check whether data is returned or not
     if (maps.isNotEmpty) {
-      print("abc");
       return UserDetailsModel.fromMap(maps.first);
     } else {
       return null;

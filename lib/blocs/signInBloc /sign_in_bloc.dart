@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter_bloc_sign_in/blocs/signUpBloc/sign_up_bloc.dart';
+
 import 'package:flutter_bloc_sign_in/models/user_details_model.dart';
 
 import '../../enumaration/sign_in_status_enum.dart';
@@ -13,14 +13,18 @@ part 'sign_in_event.dart';
 part 'sign_in_state.dart';
 
 class SignInBloc extends Bloc<SignInEvent, SignInAddState> {
-  SignInBloc()
-      : super(const SignInAddState(signInStatus: SignInStatus.success)) {
+  SignInBloc() : super(SignInAddState(signInStatus: SignInStatus.success)) {
     on<InitialSignIn>(onClickSignInButton);
+ 
   }
 
   FutureOr<void> onClickSignInButton(
       InitialSignIn event, Emitter<SignInAddState> emit) async {
     emit(state.copyWith(status: SignInStatus.initial));
+    if (event.password.isEmpty || event.userId.toString().isEmpty) {
+      emit(state.copyWith(status: SignInStatus.failure, errorMessage: "UserId or password arePlease fill userId and password."));
+      return;
+    }
     DatabaseHelper databaseHelper = DatabaseHelper();
     List<Map<String, dynamic>> dataList = await databaseHelper.getUserDetails();
     List<UserDetailsModel> userDetailsList =
@@ -41,4 +45,6 @@ class SignInBloc extends Bloc<SignInEvent, SignInAddState> {
       );
     }
   }
+
+
 }
