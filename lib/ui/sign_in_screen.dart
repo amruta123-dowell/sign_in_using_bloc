@@ -41,9 +41,12 @@ class SignInScreen extends StatelessWidget {
                 textController: passwordController,
               ),
               const SizedBox(height: 30),
-              if (context.read<SignInBloc>().state.errorMessage != null)
-                Text(context.watch<SignInBloc>().state.errorMessage!,
-                    style: const TextStyle(color: Colors.red, fontSize: 15)),
+              if (context.watch<SignInBloc>().state.errorMessage != null)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child: Text(context.watch<SignInBloc>().state.errorMessage!,
+                      style: const TextStyle(color: Colors.red, fontSize: 15)),
+                ),
               ElevatedButton(
                   style: ElevatedButton.styleFrom(
                       shadowColor: Colors.purple,
@@ -55,6 +58,7 @@ class SignInScreen extends StatelessWidget {
                             builder: (context) => const SignUpScreen()));
                     userIdController.clear();
                     passwordController.clear();
+                    context.read<SignInBloc>().add(ClearErrorEvent());
                   },
                   child: const Text(
                     "Sign up",
@@ -68,8 +72,8 @@ class SignInScreen extends StatelessWidget {
                       shadowColor: Colors.purple,
                       backgroundColor: const Color.fromARGB(255, 231, 93, 139)),
                   onPressed: () {
-                    context.read<SignInBloc>().add(InitialSignIn(
-                        userId: int.parse(userIdController.text),
+                    context.read<SignInBloc>().add(InitialSignInEvent(
+                        userId: int.tryParse(userIdController.text) ?? -1,
                         password: passwordController.text));
                   },
                   child: const Text(

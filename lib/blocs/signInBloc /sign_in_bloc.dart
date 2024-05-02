@@ -14,29 +14,34 @@ part 'sign_in_state.dart';
 
 class SignInBloc extends Bloc<SignInEvent, SignInAddState> {
   SignInBloc() : super(SignInAddState(signInStatus: SignInStatus.success)) {
-    on<InitialSignIn>(onClickSignInButton);
- 
+    on<InitialSignInEvent>(onClickSignInButton);
+    on<ClearErrorEvent>(onClearError);
   }
 
   FutureOr<void> onClickSignInButton(
-      InitialSignIn event, Emitter<SignInAddState> emit) async {
+      InitialSignInEvent event, Emitter<SignInAddState> emit) async {
     emit(state.copyWith(status: SignInStatus.initial));
     if (event.password.isEmpty || event.userId.toString().isEmpty) {
-      emit(state.copyWith(status: SignInStatus.failure, errorMessage: "UserId or password arePlease fill userId and password."));
+      emit(state.copyWith(
+          status: SignInStatus.failure,
+          errorMessage:
+              "UserId or password are empty, Please fill userId and password."));
       return;
     }
     DatabaseHelper databaseHelper = DatabaseHelper();
-    List<Map<String, dynamic>> dataList = await databaseHelper.getUserDetails();
-    List<UserDetailsModel> userDetailsList =
-        UserDetailsModel.convertToUserDetailsList(dataList);
-    UserDetailsModel? existUser = userDetailsList
-        .firstWhereOrNull((element) => element.id == event.userId);
-    if (existUser != null && existUser.password == event.password) {
+
+    UserDetailsModel? existUser =
+        await databaseHelper.getUserData(event.userId);
+    if (existUser != null &&
+        existUser.password == event.password &&
+        existUser.id == event.userId) {
       emit(state.copyWith(status: SignInStatus.success));
-    } else if (existUser != null && existUser.password != event.password) {
+    } else if (existUser != null && existUser.password != event.password ||
+        existUser!.id != event.userId) {
       emit(state.copyWith(
           status: SignInStatus.failure,
-          errorMessage: "Please check with password.Password is wrong"));
+          errorMessage:
+              "Password or UserId is wrong. Please check with password."));
     } else {
       emit(
         state.copyWith(
@@ -46,5 +51,8 @@ class SignInBloc extends Bloc<SignInEvent, SignInAddState> {
     }
   }
 
-
+  FutureOr<void> onClearError(
+      ClearErrorEvent event, Emitter<SignInAddState> emit) {
+    emit(state.copyWith(status: SignInStatus.initial, errorMessage: null));
+  }
 }

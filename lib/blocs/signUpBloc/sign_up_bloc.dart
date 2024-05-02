@@ -1,10 +1,11 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:collection/collection.dart';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc_sign_in/models/user_details_model.dart';
 import 'package:flutter_bloc_sign_in/utils/data_base.dart';
+import 'package:flutter_bloc_sign_in/utils/validataors.dart';
 
 part 'sign_up_event.dart';
 part 'sign_up_state.dart';
@@ -21,17 +22,31 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     try {
       DatabaseHelper database = DatabaseHelper();
 
-      var databaseList = await database.getUserDetails();
+      //if textfield is empty,
+      if (event.userDetails.email.isEmpty ||
+          event.userDetails.password.isEmpty ||
+          event.userDetails.id == -1) {
+        emit(const SignUpFailure(
+            errorMessage: "Invalid input, Please proper details."));
+        return;
+      }
 
-      List<UserDetailsModel> userDataList =
-          UserDetailsModel.convertToUserDetailsList(databaseList);
-      var repeatedUid = userDataList
-          .firstWhereOrNull((element) => element.id == event.userDetails.id);
+      var repeatedUid = await database.getUserData(event.userDetails.id);
 
       if (repeatedUid == null) {
         database.insertUser(event.userDetails);
-        print(databaseList);
+
         emit(SignUpSuccess());
+      } else if (Validators.validateEmail(event.userDetails.email) != null &&
+          Validators.validateEmail(event.userDetails.email)!.isNotEmpty) {
+        emit(SignUpFailure(
+            errorMessage: Validators.validateEmail(event.userDetails.email)!));
+      } else if (Validators.validatePassword(event.userDetails.password) !=
+              null &&
+          Validators.validatePassword(event.userDetails.password)!.isNotEmpty) {
+        emit(SignUpFailure(
+            errorMessage:
+                Validators.validatePassword(event.userDetails.password)!));
       } else {
         emit(const SignUpFailure(
             errorMessage:

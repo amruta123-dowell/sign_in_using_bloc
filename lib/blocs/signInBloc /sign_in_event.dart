@@ -7,13 +7,13 @@ class SignInEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class InitialSignIn extends SignInEvent {
+class InitialSignInEvent extends SignInEvent {
   final int userId;
   final String password;
-  const InitialSignIn({required this.userId, required this.password});
+  const InitialSignInEvent({required this.userId, required this.password});
 
   @override
   List<Object> get props => [userId, password];
 }
 
-
+class ClearErrorEvent extends SignInEvent {}
