@@ -18,8 +18,13 @@ class SignInScreen extends StatelessWidget {
     return BlocConsumer<SignInBloc, SignInAddState>(
       listener: (context, state) {
         if (state.signInStatus == SignInStatus.success) {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const HomeScreen()));
+          Navigator.pushNamed(context, "/homeScreen",
+              arguments: {"userId": state.userId});
+          // Navigator.push(
+          //     context,
+          //     MaterialPageRoute(
+          //       builder: (context) => const HomeScreen(),
+          //     ));
           passwordController.clear();
           userIdController.clear();
         }
@@ -52,10 +57,11 @@ class SignInScreen extends StatelessWidget {
                       shadowColor: Colors.purple,
                       backgroundColor: const Color.fromARGB(255, 231, 93, 139)),
                   onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const SignUpScreen()));
+                    Navigator.pushNamed(context, '/signUpScreen');
+                    // Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //         builder: (context) => const SignUpScreen()));
                     userIdController.clear();
                     passwordController.clear();
                     context.read<SignInBloc>().add(ClearErrorEvent());

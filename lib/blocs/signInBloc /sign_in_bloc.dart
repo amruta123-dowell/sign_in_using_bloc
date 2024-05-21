@@ -32,12 +32,14 @@ class SignInBloc extends Bloc<SignInEvent, SignInAddState> {
 
     UserDetailsModel? existUser =
         await databaseHelper.getUserData(event.userId);
+    print(existUser);
     if (existUser != null &&
         existUser.password == event.password &&
         existUser.id == event.userId) {
-      emit(state.copyWith(status: SignInStatus.success));
+      print(existUser);
+      emit(state.copyWith(status: SignInStatus.success, userId: event.userId));
     } else if (existUser != null && existUser.password != event.password ||
-        existUser!.id != event.userId) {
+        existUser?.id != event.userId) {
       emit(state.copyWith(
           status: SignInStatus.failure,
           errorMessage:
